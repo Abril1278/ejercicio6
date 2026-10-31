@@ -1,6 +1,5 @@
-public interface Widget {
+public interface Widget extends Renderizable {
     int getId();
     String getNombre();
     double getMemoria();
-    void renderizar();
 }

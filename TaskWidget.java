@@ -1,14 +1,71 @@
+import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 public class TaskWidget implements Widget, IInteractivo {
 
-    private String tarea;
+    private List<String> tareas;
+    private int completadas;
+
+    private JPanel panel;
+    private JLabel etiqueta;
+    private JButton boton;
 
     public TaskWidget() {
-        tarea = "Estudiar UML";
+        tareas = new ArrayList<>();
+        tareas.add("Estudiar UML");
+        tareas.add("Programar interfaces");
+
+        completadas = 0;
+
+        panel = new JPanel(new BorderLayout());
+        etiqueta = new JLabel();
+        boton = new JButton("Completar siguiente tarea");
+
+        panel.add(etiqueta, BorderLayout.CENTER);
+        panel.add(boton, BorderLayout.SOUTH);
+
+        boton.addActionListener(e -> click());
+
+        renderizar();
     }
 
     @Override
     public void renderizar() {
-        System.out.println("Tarea: " + tarea);
+        StringBuilder contenido = new StringBuilder("<html>");
+
+        for (int i = 0; i < tareas.size(); i++) {
+            if (i < completadas) {
+                contenido.append("[Completada] ");
+            } else {
+                contenido.append("[Pendiente] ");
+            }
+
+            contenido.append(tareas.get(i)).append("<br>");
+        }
+
+        contenido.append("</html>");
+        etiqueta.setText(contenido.toString());
+
+        boton.setEnabled(completadas < tareas.size());
+    }
+
+    @Override
+    public void click() {
+        if (completadas < tareas.size()) {
+            completadas++;
+        }
+
+        renderizar();
+    }
+
+    @Override
+    public JComponent obtenerVista() {
+        return panel;
     }
 
     @Override
@@ -24,10 +81,5 @@ public class TaskWidget implements Widget, IInteractivo {
     @Override
     public double getMemoria() {
         return 50;
-    }
-
-    @Override
-    public void click() {
-        tarea = "Completada";
     }
 }
